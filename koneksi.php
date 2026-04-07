@@ -7,7 +7,7 @@
     $host = "localhost";
     $username = "root";
     $password = "";
-    $database = "db_barang";
+    $database = "gudang";
 
     $koneksi = mysqli_connect($host, $username, $password, $database);
 

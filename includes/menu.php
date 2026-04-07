@@ -42,7 +42,7 @@ $menu_items = array(
     </nav>
     
     <div class="sidebar-footer">
-        <a href="login.php" class="logout-link">
+        <a href="logout.php" class="logout-link">
             <i class="fas fa-sign-out-alt"></i>
             <span>Logout</span>
         </a>

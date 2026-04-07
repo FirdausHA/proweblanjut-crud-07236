@@ -15,9 +15,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $kode_barang = clean_input($_POST['kode_barang']);
     $nama_barang = clean_input($_POST['nama_barang']);
     $kategori = clean_input($_POST['kategori']);
-    $stok = clean_input($_POST['stok']);
+    $jumlah = clean_input($_POST['jumlah']);
     $harga = clean_input($_POST['harga']);
     $deskripsi = clean_input($_POST['deskripsi']);
+    $tanggal_masuk = clean_input($_POST['tanggal_masuk']);
     
     // Cek kode unik
     $check_query = "SELECT id FROM barang WHERE kode_barang = '$kode_barang'";
@@ -27,8 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_SESSION['pesan'] = "Kode barang sudah digunakan!";
         $_SESSION['tipe'] = "error";
     } else {
-        $query = "INSERT INTO barang (kode_barang, nama_barang, kategori, stok, harga, deskripsi, status, created_at) 
-                  VALUES ('$kode_barang', '$nama_barang', '$kategori', '$stok', '$harga', '$deskripsi', 'aktif', NOW())";
+        $query = "INSERT INTO barang (kode_barang, nama_barang, kategori, jumlah, harga, deskripsi, tanggal_masuk, status, created_at) 
+                  VALUES ('$kode_barang', '$nama_barang', '$kategori', '$jumlah', '$harga', '$deskripsi', '$tanggal_masuk', 'aktif', NOW())";
         
         if (mysqli_query($koneksi, $query)) {
             $_SESSION['pesan'] = "Barang berhasil ditambahkan!";
@@ -82,7 +83,8 @@ $page_title = "Tambah Barang";
     </header>
 
     <main class="main-content">
-        <div class="form-header-row">
+        <div class="content-inner">
+            <div class="form-header-row">
             <a href="index.php?page=data_barang" class="btn-back-circle">
                 <i class="fas fa-arrow-left"></i>
             </a>
@@ -115,8 +117,13 @@ $page_title = "Tambah Barang";
                         </div>
                         
                         <div class="form-group" style="margin-bottom: 24px;">
-                            <label class="form-label-required">Stok Awal</label>
-                            <input type="number" name="stok" class="form-control-custom" placeholder="0" min="0" required>
+                            <label class="form-label-required">Jumlah Stok</label>
+                            <input type="number" name="jumlah" class="form-control-custom" placeholder="0" min="0" required>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 24px;">
+                            <label class="form-label-required">Tanggal Masuk</label>
+                            <input type="date" name="tanggal_masuk" class="form-control-custom" value="<?php echo date('Y-m-d'); ?>" required>
                         </div>
                     </div>
                     
@@ -124,18 +131,19 @@ $page_title = "Tambah Barang";
                     <div>
                         <div class="form-group" style="margin-bottom: 24px;">
                             <label class="form-label-required">Harga (Rp)</label>
-                            <input type="number" name="harga" class="form-control-custom" placeholder="Contoh: 100.000" min="0" required>
+                            <input type="number" name="harga" class="form-control-custom" placeholder="Contoh: 100.000" min="0" step="0.01" required>
                         </div>
                         
                         <div class="form-group" style="margin-bottom: 24px;">
                             <label class="form-label-required">Kode Barang</label>
-                            <input type="text" name="kode_barang" class="form-control-custom" placeholder="barang@sigudhang.com" required>
+                            <input type="text" name="kode_barang" class="form-control-custom" placeholder="BRG001" required>
                         </div>
                         
                         <div class="form-group" style="margin-bottom: 24px;">
-                            <label class="form-label-required">Status Stok</label>
-                            <select name="status" class="form-control-custom" disabled>
+                            <label class="form-label-required">Status</label>
+                            <select name="status" class="form-control-custom" required>
                                 <option value="aktif">Aktif</option>
+                                <option value="nonaktif">Nonaktif</option>
                             </select>
                         </div>
                     </div>
@@ -152,7 +160,8 @@ $page_title = "Tambah Barang";
                 </div>
             </form>
         </div>
-    </main>
+    </div> <!-- Close content-inner -->
+</main>
 </div>
 
 <?php include 'includes/footer.php'; ?>

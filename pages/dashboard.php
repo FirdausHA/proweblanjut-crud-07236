@@ -16,7 +16,7 @@ include 'koneksi.php';
         <div class="stat-content">
             <h3 class="stat-label">Stok Kurang (< 5)</h3>
             <?php
-            $sql = "SELECT COUNT(*) as total FROM barang where stok < 5";
+            $sql = "SELECT COUNT(*) as total FROM barang where jumlah < 5";
             $result = $koneksi->query($sql);
             $row = $result->fetch_assoc();
             ?>

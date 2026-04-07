@@ -30,9 +30,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $kode_barang = clean_input($_POST['kode_barang']);
     $nama_barang = clean_input($_POST['nama_barang']);
     $kategori = clean_input($_POST['kategori']);
-    $stok = clean_input($_POST['stok']);
+    $jumlah = clean_input($_POST['jumlah']);
     $harga = clean_input($_POST['harga']);
     $deskripsi = clean_input($_POST['deskripsi']);
+    $tanggal_masuk = clean_input($_POST['tanggal_masuk']);
     $status = clean_input($_POST['status']);
     
     // Cek kode unik (kecuali untuk barang ini)
@@ -47,9 +48,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                   kode_barang = '$kode_barang',
                   nama_barang = '$nama_barang',
                   kategori = '$kategori',
-                  stok = '$stok',
+                  jumlah = '$jumlah',
                   harga = '$harga',
                   deskripsi = '$deskripsi',
+                  tanggal_masuk = '$tanggal_masuk',
                   status = '$status',
                   updated_at = NOW()
                   WHERE id = $id";
@@ -106,100 +108,85 @@ $page_title = "Edit Barang";
     </header>
 
     <main class="main-content">
-        <div class="page-title-block">
-            <h2>Edit Barang</h2>
-            <p>Perbarui informasi item barang dalam inventaris.</p>
+        <div class="content-inner">
+            <div class="form-header-row">
+            <a href="index.php?page=data_barang" class="btn-back-circle">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div class="page-title-block" style="margin-bottom: 0;">
+                <h2 style="font-size: 24px; font-weight: 700;">Edit Barang</h2>
+                <p style="font-size: 14px;">Perbarui informasi item barang dalam inventaris.</p>
+            </div>
         </div>
         
-        <div class="card">
-            <div class="card-header-simple" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-                <h3 style="font-size: 18px; font-weight: 600;">Form Edit Barang</h3>
-                <a href="index.php?page=data_barang" class="btn-secondary" style="padding: 8px 16px;">
-                    <i class="fas fa-arrow-left"></i> Kembali
-                </a>
-            </div>
-            
-            <div class="card-body">
-                <form method="POST" class="form-vertical">
-                    <div class="form-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-bottom: 24px;">
-                        <div class="form-group">
-                            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-color);">
-                                <i class="fas fa-barcode"></i> Kode Barang *
-                            </label>
-                            <input type="text" name="kode_barang" value="<?php echo htmlspecialchars($barang['kode_barang']); ?>" required style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; outline: none;">
+        <div class="card" style="padding: 48px !important;">
+            <form method="POST">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+                    <!-- Column 1 -->
+                    <div>
+                        <div class="form-group" style="margin-bottom: 24px;">
+                            <label class="form-label-required">Nama Barang</label>
+                            <input type="text" name="nama_barang" class="form-control-custom" value="<?php echo htmlspecialchars($barang['nama_barang']); ?>" required>
                         </div>
                         
-                        <div class="form-group">
-                            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-color);">
-                                <i class="fas fa-box"></i> Nama Barang *
-                            </label>
-                            <input type="text" name="nama_barang" value="<?php echo htmlspecialchars($barang['nama_barang']); ?>" required style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; outline: none;">
-                        </div>
-                    </div>
-                    
-                    <div class="form-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; margin-bottom: 24px;">
-                        <div class="form-group">
-                            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-color);">
-                                <i class="fas fa-tags"></i> Kategori *
-                            </label>
-                            <select name="kategori" required style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: white; outline: none;">
+                        <div class="form-group" style="margin-bottom: 24px;">
+                            <label class="form-label-required">Kategori</label>
+                            <select name="kategori" class="form-control-custom" required>
                                 <option value="">Pilih Kategori</option>
                                 <option value="Elektronik" <?php echo $barang['kategori'] == 'Elektronik' ? 'selected' : ''; ?>>Elektronik</option>
                                 <option value="Pakaian" <?php echo $barang['kategori'] == 'Pakaian' ? 'selected' : ''; ?>>Pakaian</option>
                                 <option value="Makanan" <?php echo $barang['kategori'] == 'Makanan' ? 'selected' : ''; ?>>Makanan</option>
                                 <option value="Minuman" <?php echo $barang['kategori'] == 'Minuman' ? 'selected' : ''; ?>>Minuman</option>
-                                <option value="Alat Tulis" <?php echo $barang['kategori'] == 'Alat Tulis' ? 'selected' : ''; ?>>Alat Tulis</option>
-                                <option value="Olahraga" <?php echo $barang['kategori'] == 'Olahraga' ? 'selected' : ''; ?>>Olahraga</option>
                                 <option value="Lainnya" <?php echo $barang['kategori'] == 'Lainnya' ? 'selected' : ''; ?>>Lainnya</option>
                             </select>
                         </div>
                         
-                        <div class="form-group">
-                            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-color);">
-                                <i class="fas fa-cubes"></i> Stok *
-                            </label>
-                            <input type="number" name="stok" value="<?php echo $barang['stok']; ?>" min="0" required style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; outline: none;">
+                        <div class="form-group" style="margin-bottom: 24px;">
+                            <label class="form-label-required">Jumlah Stok</label>
+                            <input type="number" name="jumlah" class="form-control-custom" value="<?php echo $barang['jumlah']; ?>" min="0" required>
                         </div>
-                        
-                        <div class="form-group">
-                            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-color);">
-                                <i class="fas fa-money-bill-wave"></i> Harga (Rp) *
-                            </label>
-                            <input type="number" name="harga" value="<?php echo $barang['harga']; ?>" min="0" required style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; outline: none;">
+
+                        <div class="form-group" style="margin-bottom: 24px;">
+                            <label class="form-label-required">Tanggal Masuk</label>
+                            <input type="date" name="tanggal_masuk" class="form-control-custom" value="<?php echo date('Y-m-d', strtotime($barang['tanggal_masuk'])); ?>" required>
                         </div>
                     </div>
                     
-                    <div class="form-row" style="margin-bottom: 24px;">
-                        <div class="form-group">
-                            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-color);">
-                                <i class="fas fa-toggle-on"></i> Status
-                            </label>
-                            <select name="status" required style="width: 100%; max-width: 250px; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: white; outline: none;">
+                    <!-- Column 2 -->
+                    <div>
+                        <div class="form-group" style="margin-bottom: 24px;">
+                            <label class="form-label-required">Harga (Rp)</label>
+                            <input type="number" name="harga" class="form-control-custom" value="<?php echo $barang['harga']; ?>" min="0" step="0.01" required>
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom: 24px;">
+                            <label class="form-label-required">Kode Barang</label>
+                            <input type="text" name="kode_barang" class="form-control-custom" value="<?php echo htmlspecialchars($barang['kode_barang']); ?>" required>
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom: 24px;">
+                            <label class="form-label-required">Status</label>
+                            <select name="status" class="form-control-custom" required>
                                 <option value="aktif" <?php echo $barang['status'] == 'aktif' ? 'selected' : ''; ?>>Aktif</option>
                                 <option value="nonaktif" <?php echo $barang['status'] == 'nonaktif' ? 'selected' : ''; ?>>Nonaktif</option>
                             </select>
                         </div>
                     </div>
-                    
-                    <div class="form-group" style="margin-bottom: 24px;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-color);">
-                            <i class="fas fa-align-left"></i> Deskripsi
-                        </label>
-                        <textarea name="deskripsi" rows="4" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; outline: none;"><?php echo htmlspecialchars($barang['deskripsi']); ?></textarea>
-                    </div>
-                    
-                    <div class="form-actions" style="display: flex; justify-content: flex-end; gap: 12px; padding-top: 24px; border-top: 1px solid var(--border);">
-                        <button type="reset" class="btn-secondary" style="border: none; cursor: pointer;">
-                            <i class="fas fa-redo"></i> Reset
-                        </button>
-                        <button type="submit" class="btn-primary" style="border: none; cursor: pointer;">
-                            <i class="fas fa-save"></i> Simpan Perubahan
-                        </button>
-                    </div>
-                </form>
-            </div>
+                </div>
+                
+                <div class="form-group" style="margin-top: 8px;">
+                    <label class="form-label-required">Deskripsi Barang</label>
+                    <textarea name="deskripsi" class="form-control-custom" rows="3" style="resize: none;"><?php echo htmlspecialchars($barang['deskripsi']); ?></textarea>
+                </div>
+
+                <div class="form-actions-end">
+                    <a href="index.php?page=data_barang" class="btn-batal">Batal</a>
+                    <button type="submit" class="btn-simpan">Simpan Perubahan</button>
+                </div>
+            </form>
         </div>
-    </main>
+    </div> <!-- Close content-inner -->
+</main>
 </div>
 
 <?php include 'includes/footer.php'; ?>

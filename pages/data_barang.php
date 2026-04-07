@@ -24,7 +24,7 @@
 
 <div class="page-title-block">
     <h2>Data Barang</h2>
-    <p>Daftar semua barang dari semua supplier (referensi admin).</p>
+    <p>Daftar semua barang dalam inventaris gudang.</p>
 </div>
 
 <div class="filters-bar">
@@ -60,8 +60,9 @@
                     <th>Kode Barang</th>
                     <th>Kategori</th>
                     <th>Harga</th>
-                    <th>Stok</th>
-                    <th>Supplier</th>
+                    <th>Jumlah</th>
+                    <th>Tgl Masuk</th>
+                    <th>Status</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
@@ -87,15 +88,20 @@
                         <td>
                             <?php 
                                 $stock_class = 'stock-high';
-                                if ($row['stok'] <= 5) $stock_class = 'stock-low';
-                                elseif ($row['stok'] <= 15) $stock_class = 'stock-medium';
+                                if ($row['jumlah'] <= 5) $stock_class = 'stock-low';
+                                elseif ($row['jumlah'] <= 15) $stock_class = 'stock-medium';
                             ?>
                             <div class="stock-text <?php echo $stock_class; ?>">
-                                <?php echo $row['stok']; ?> unit
+                                <?php echo $row['jumlah']; ?> unit
                             </div>
                         </td>
                         <td>
-                            <div class="supplier-text">Toko Sebelah</div> <!-- Placeholder since no supplier in DB -->
+                            <div class="date-text"><?php echo date('d/m/Y', strtotime($row['tanggal_masuk'])); ?></div>
+                        </td>
+                        <td>
+                            <span class="badge-status <?php echo $row['status'] == 'aktif' ? 'status-active' : 'status-inactive'; ?>">
+                                <?php echo ucfirst($row['status']); ?>
+                            </span>
                         </td>
                         <td>
                             <div style="display: flex; gap: 10px;">
@@ -114,7 +120,7 @@
                     <?php endwhile; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="8" class="text-center">
+                        <td colspan="9" class="text-center">
                             <div class="empty-state">
                                 <i class="fas fa-box-open fa-3x"></i>
                                 <h4>Belum ada data barang</h4>

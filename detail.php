@@ -52,7 +52,8 @@ $page_title = "Detail Barang";
     </header>
 
     <main class="main-content">
-        <div class="form-header-row">
+        <div class="content-inner">
+            <div class="form-header-row">
             <a href="index.php?page=data_barang" class="btn-back-circle">
                 <i class="fas fa-arrow-left"></i>
             </a>
@@ -77,8 +78,8 @@ $page_title = "Detail Barang";
                     <!-- Column 2: Information -->
                     <div>
                         <div class="detail-display-group">
-                            <label class="detail-display-label">Supplier</label>
-                            <div class="detail-display-value">Toko Sebelah</div>
+                            <label class="detail-display-label">Kode Barang</label>
+                            <div class="detail-display-value"><?php echo htmlspecialchars($barang['kode_barang']); ?></div>
                         </div>
                         
                         <div class="detail-display-group">
@@ -97,10 +98,16 @@ $page_title = "Detail Barang";
                             </div>
                         </div>
                         
-                        <div class="detail-display-group" style="width: 50%;">
-                            <label class="detail-display-label">Stok Tersedia</label>
-                            <div class="detail-display-value <?php echo $barang['stok'] < 10 ? 'stock-low' : ''; ?>">
-                                <?php echo $barang['stok']; ?> unit
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 20px;">
+                            <div class="detail-display-group" style="margin-bottom: 0;">
+                                <label class="detail-display-label">Jumlah Stok</label>
+                                <div class="detail-display-value <?php echo $barang['jumlah'] < 10 ? 'stock-low' : ''; ?>">
+                                    <?php echo $barang['jumlah']; ?> unit
+                                </div>
+                            </div>
+                            <div class="detail-display-group" style="margin-bottom: 0;">
+                                <label class="detail-display-label">Tanggal Masuk</label>
+                                <div class="detail-display-value"><?php echo date('d/m/Y', strtotime($barang['tanggal_masuk'])); ?></div>
                             </div>
                         </div>
                         
@@ -123,7 +130,8 @@ $page_title = "Detail Barang";
                 </div>
             </div>
         </div>
-    </main>
+    </div> <!-- Close content-inner -->
+</main>
 </div>
 
 <?php include 'includes/footer.php'; ?>
