@@ -2,24 +2,38 @@
     // Query data barang
     include 'koneksi.php';
     
-    // Search & Filter Logic
-    $search = isset($_GET['search']) ? mysqli_real_escape_string($koneksi, $_GET['search']) : '';
-    $kategori_filter = isset($_GET['kategori']) ? mysqli_real_escape_string($koneksi, $_GET['kategori']) : '';
+    // Proteksi Halaman
+    if (!isset($_SESSION['user_id'])) {
+        header("Location: login.php");
+        exit();
+    }
+
+    // Search & Filter Logic (PDO)
+    $search = isset($_GET['search']) ? $_GET['search'] : '';
+    $kategori_filter = isset($_GET['kategori']) ? $_GET['kategori'] : '';
     
     $where = "WHERE 1=1";
+    $params = [];
     if ($search) {
-        $where .= " AND (nama_barang LIKE '%$search%' OR kode_barang LIKE '%$search%' OR kategori LIKE '%$search%')";
+        $where .= " AND (nama_barang LIKE ? OR kode_barang LIKE ? OR kategori LIKE ?)";
+        $search_param = "%$search%";
+        $params[] = $search_param;
+        $params[] = $search_param;
+        $params[] = $search_param;
     }
     if ($kategori_filter) {
-        $where .= " AND kategori = '$kategori_filter'";
+        $where .= " AND kategori = ?";
+        $params[] = $kategori_filter;
     }
     
     $query = "SELECT * FROM barang $where ORDER BY id DESC";
-    $result = mysqli_query($koneksi, $query);
+    $stmt = $pdo->prepare($query);
+    $stmt->execute($params);
+    $barang_list = $stmt->fetchAll();
     
     // Get all categories for filter
     $cat_query = "SELECT DISTINCT kategori FROM barang WHERE kategori IS NOT NULL AND kategori != ''";
-    $cat_result = mysqli_query($koneksi, $cat_query);
+    $categories = $pdo->query($cat_query)->fetchAll(PDO::FETCH_COLUMN);
 ?>
 
 <div class="page-title-block">
@@ -32,11 +46,11 @@
         <input type="hidden" name="page" value="data_barang">
         <select name="kategori" class="filter-select" onchange="this.form.submit()">
             <option value="">Semua Kategori</option>
-            <?php while($cat = mysqli_fetch_assoc($cat_result)): ?>
-                <option value="<?php echo $cat['kategori']; ?>" <?php echo $kategori_filter == $cat['kategori'] ? 'selected' : ''; ?>>
-                    <?php echo $cat['kategori']; ?>
+            <?php foreach($categories as $cat): ?>
+                <option value="<?php echo $cat; ?>" <?php echo $kategori_filter == $cat ? 'selected' : ''; ?>>
+                    <?php echo $cat; ?>
                 </option>
-            <?php endwhile; ?>
+            <?php endforeach; ?>
         </select>
         
         <div class="search-input-group">
@@ -67,11 +81,15 @@
                 </tr>
             </thead>
             <tbody>
-                <?php if(mysqli_num_rows($result) > 0): ?>
-                    <?php while($row = mysqli_fetch_assoc($result)): ?>
+                <?php if(count($barang_list) > 0): ?>
+                    <?php foreach($barang_list as $row): ?>
                     <tr>
                         <td>
-                            <img src="https://ui-avatars.com/api/?name=<?php echo urlencode($row['nama_barang']); ?>&background=random&color=fff&size=48" alt="Product" class="product-img">
+                            <?php if($row['gambar'] && file_exists('uploads/' . $row['gambar'])): ?>
+                                <img src="uploads/<?php echo $row['gambar']; ?>" alt="Product" class="product-img">
+                            <?php else: ?>
+                                <img src="https://ui-avatars.com/api/?name=<?php echo urlencode($row['nama_barang']); ?>&background=random&color=fff&size=48" alt="Product" class="product-img">
+                            <?php endif; ?>
                         </td>
                         <td>
                             <div class="product-name"><?php echo htmlspecialchars($row['nama_barang']); ?></div>
@@ -111,13 +129,13 @@
                                 <a href="edit.php?id=<?php echo $row['id']; ?>" class="btn-action-square btn-edit-solid" title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <a href="hapus.php?id=<?php echo $row['id']; ?>" class="btn-action-square btn-delete-solid" title="Hapus" onclick="return confirm('Yakin hapus barang ini?')">
+                                <button type="button" class="btn-action-square btn-delete-solid" title="Hapus" onclick="openDeleteModal(<?php echo $row['id']; ?>)">
                                     <i class="fas fa-trash"></i>
-                                </a>
+                                </button>
                             </div>
                         </td>
                     </tr>
-                    <?php endwhile; ?>
+                    <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
                         <td colspan="9" class="text-center">

@@ -9,27 +9,30 @@ if (isset($_SESSION['user_id'])) {
 $error = "";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $nama_lengkap = mysqli_real_escape_string($koneksi, $_POST['nama_lengkap']);
-    $username = mysqli_real_escape_string($koneksi, $_POST['username']);
+    $nama_lengkap = trim($_POST['nama_lengkap']);
+    $username = trim($_POST['username']);
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
 
     if ($password !== $confirm_password) {
         $error = "Konfirmasi password tidak sesuai!";
     } else {
-        $check_user = mysqli_query($koneksi, "SELECT id FROM users WHERE username = '$username'");
-        if (mysqli_num_rows($check_user) > 0) {
+        $stmt_check = $pdo->prepare("SELECT id FROM users WHERE username = ?");
+        $stmt_check->execute([$username]);
+        if ($stmt_check->rowCount() > 0) {
             $error = "Username sudah terdaftar!";
         } else {
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-            $query = "INSERT INTO users (nama_lengkap, username, password) VALUES ('$nama_lengkap', '$username', '$hashed_password')";
-            if (mysqli_query($koneksi, $query)) {
-                $_SESSION['pesan'] = "Registrasi berhasil! Silakan login.";
-                $_SESSION['tipe'] = "success";
-                header("Location: login.php");
-                exit();
-            } else {
-                $error = "Terjadi kesalahan: " . mysqli_error($koneksi);
+            try {
+                $stmt_insert = $pdo->prepare("INSERT INTO users (nama_lengkap, username, password) VALUES (?, ?, ?)");
+                if ($stmt_insert->execute([$nama_lengkap, $username, $hashed_password])) {
+                    $_SESSION['pesan'] = "Registrasi berhasil! Silakan login.";
+                    $_SESSION['tipe'] = "success";
+                    header("Location: login.php");
+                    exit();
+                }
+            } catch (PDOException $e) {
+                $error = "Terjadi kesalahan: " . $e->getMessage();
             }
         }
     }

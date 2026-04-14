@@ -10,7 +10,49 @@
         </div>
     </footer>
 
+    <!-- Custom Delete Modal -->
+    <div class="modal-overlay" id="delete-modal-overlay">
+        <div class="delete-modal">
+            <div class="modal-header-custom">
+                <div class="modal-icon-alert">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3>Hapus Data</h3>
+            </div>
+            <div class="modal-body-custom">
+                <p>Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.</p>
+            </div>
+            <div class="modal-footer-custom">
+                <button type="button" class="btn-modal-cancel" id="btn-cancel-delete">Batal</button>
+                <a href="#" class="btn-modal-confirm" id="btn-confirm-delete">Ya, Hapus</a>
+            </div>
+        </div>
+    </div>
+
     <script>
+    // Delete Modal Logic
+    const deleteModal = document.getElementById('delete-modal-overlay');
+    const btnCancelDelete = document.getElementById('btn-cancel-delete');
+    const btnConfirmDelete = document.getElementById('btn-confirm-delete');
+
+    function openDeleteModal(id) {
+        btnConfirmDelete.href = 'hapus.php?id=' + id;
+        deleteModal.classList.add('active');
+    }
+
+    if (btnCancelDelete) {
+        btnCancelDelete.addEventListener('click', () => {
+            deleteModal.classList.remove('active');
+        });
+    }
+
+    // Close modal on click outside
+    window.addEventListener('click', (e) => {
+        if (e.target === deleteModal) {
+            deleteModal.classList.remove('active');
+        }
+    });
+
     // Sidebar Mobile Toggle
     const mobileToggle = document.getElementById('mobile-toggle');
     const sidebar = document.querySelector('.sidebar');

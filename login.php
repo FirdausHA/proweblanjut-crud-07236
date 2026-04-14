@@ -2,12 +2,14 @@
 include 'koneksi.php';
 
 
+// Fitur Remember Me: Cek Cookie
 if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_token'])) {
     $token = $_COOKIE['remember_token'];
-    $query = "SELECT * FROM users WHERE remember_token = '$token' LIMIT 1";
-    $result = mysqli_query($koneksi, $query);
-    if ($row = mysqli_fetch_assoc($result)) {
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE remember_token = ? LIMIT 1");
+    $stmt->execute([$token]);
+    if ($row = $stmt->fetch()) {
         $_SESSION['user_id'] = $row['id'];
+        $_SESSION['username'] = $row['username'];
         $_SESSION['nama_lengkap'] = $row['nama_lengkap'];
         header("Location: index.php");
         exit();
@@ -22,22 +24,24 @@ if (isset($_SESSION['user_id'])) {
 $error = "";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = mysqli_real_escape_string($koneksi, $_POST['username']);
+    $username = trim($_POST['username']);
     $password = $_POST['password'];
     $remember = isset($_POST['remember']);
 
-    $query = "SELECT * FROM users WHERE username = '$username' LIMIT 1";
-    $result = mysqli_query($koneksi, $query);
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ? LIMIT 1");
+    $stmt->execute([$username]);
 
-    if ($row = mysqli_fetch_assoc($result)) {
+    if ($row = $stmt->fetch()) {
         if (password_verify($password, $row['password'])) {
             $_SESSION['user_id'] = $row['id'];
+            $_SESSION['username'] = $row['username'];
             $_SESSION['nama_lengkap'] = $row['nama_lengkap'];
 
             if ($remember) {
                 $token = bin2hex(random_bytes(32));
-                mysqli_query($koneksi, "UPDATE users SET remember_token = '$token' WHERE id = " . $row['id']);
-                setcookie('remember_token', $token, time() + (86400 * 30), "/");
+                $stmt_update = $pdo->prepare("UPDATE users SET remember_token = ? WHERE id = ?");
+                $stmt_update->execute([$token, $row['id']]);
+                setcookie('remember_token', $token, time() + (86400 * 30), "/"); // 30 hari
             }
 
             header("Location: index.php");

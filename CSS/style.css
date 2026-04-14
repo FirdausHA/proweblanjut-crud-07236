@@ -460,6 +460,108 @@ ul {
     font-size: 14px;
 }
 
+/* =========================================
+   Custom Delete Modal
+   ========================================= */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    backdrop-filter: blur(4px);
+    transition: all 0.3s ease;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.delete-modal {
+    background: white;
+    width: 100%;
+    max-width: 450px;
+    padding: 32px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+}
+
+.modal-overlay.active .delete-modal {
+    transform: translateY(0);
+}
+
+.modal-header-custom {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.modal-icon-alert {
+    width: 40px;
+    height: 40px;
+    background: #fff5f5;
+    color: #fa5252;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.modal-header-custom h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0;
+}
+
+.modal-body-custom p {
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 32px;
+}
+
+.modal-footer-custom {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.btn-modal-cancel {
+    padding: 12px 24px;
+    background: #f1f3f5;
+    color: #495057;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.btn-modal-confirm {
+    padding: 12px 24px;
+    background: #e03131;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(224, 49, 49, 0.2);
+}
+
+.btn-modal-confirm:hover { background: #c22525; }
+.btn-modal-cancel:hover { background: #e9ecef; }
+
 /* Notifications */
 .notification {
     padding: 16px 24px;
