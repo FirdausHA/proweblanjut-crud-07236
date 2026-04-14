@@ -63,73 +63,61 @@ $page_title = "Detail Barang";
                 </div>
                 
                 <div class="card-body" style="padding: 40px;">
-                    <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 48px; align-items: start;">
-                        <!-- Column 1: Image -->
-                        <div style="text-align: center;">
-                            <?php if($barang['gambar'] && file_exists('uploads/' . $barang['gambar'])): ?>
-                                <img src="uploads/<?php echo $barang['gambar']; ?>" alt="Product Image" class="detail-product-image">
-                            <?php else: ?>
-                                <img src="https://ui-avatars.com/api/?name=<?php echo urlencode($barang['nama_barang']); ?>&background=00897b&color=fff&size=400&font-size=0.3" alt="Product Image" class="detail-product-image">
-                            <?php endif; ?>
+                <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 48px; align-items: start;">
+                    <!-- Column 1: Image -->
+                    <div style="text-align: center;">
+                        <?php if($barang['gambar'] && file_exists('uploads/' . $barang['gambar'])): ?>
+                            <img src="uploads/<?php echo $barang['gambar']; ?>" alt="Product Image" class="detail-product-image">
+                        <?php else: ?>
+                            <img src="https://ui-avatars.com/api/?name=<?php echo urlencode($barang['nama_barang']); ?>&background=00897b&color=fff&size=400&font-size=0.3" alt="Product Image" class="detail-product-image">
+                        <?php endif; ?>
+                    </div>
+                    
+                    <!-- Column 2: Information -->
+                    <div>
+                        <div class="detail-display-group">
+                            <label class="detail-display-label">Kode Barang</label>
+                            <div class="detail-display-value"><?php echo htmlspecialchars($barang['kode_barang']); ?></div>
                         </div>
                         
-                        <!-- Column 2: Information -->
-                        <div>
-                            <div class="detail-display-group">
-                                <label class="detail-display-label">Kode Barang</label>
-                                <div class="detail-display-value"><?php echo htmlspecialchars($barang['kode_barang']); ?></div>
+                        <div class="detail-display-group">
+                            <label class="detail-display-label">Nama Barang</label>
+                            <div class="detail-display-value"><?php echo htmlspecialchars($barang['nama_barang']); ?></div>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 20px;">
+                            <div class="detail-display-group" style="margin-bottom: 0;">
+                                <label class="detail-display-label">Kategori</label>
+                                <div class="detail-display-value"><?php echo htmlspecialchars($barang['kategori']); ?></div>
                             </div>
-                            
-                            <div class="detail-display-group">
-                                <label class="detail-display-label">Nama Barang</label>
-                                <div class="detail-display-value"><?php echo htmlspecialchars($barang['nama_barang']); ?></div>
+                            <div class="detail-display-group" style="margin-bottom: 0;">
+                                <label class="detail-display-label">Harga Satuan</label>
+                                <div class="detail-display-value">Rp <?php echo number_format($barang['harga'], 0, ',', '.'); ?></div>
                             </div>
-                            
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 20px;">
-                                <div class="detail-display-group" style="margin-bottom: 0;">
-                                    <label class="detail-display-label">Kategori</label>
-                                    <div class="detail-display-value"><?php echo htmlspecialchars($barang['kategori']); ?></div>
-                                </div>
-                                <div class="detail-display-group" style="margin-bottom: 0;">
-                                    <label class="detail-display-label">Harga Satuan</label>
-                                    <div class="detail-display-value">Rp <?php echo number_format($barang['harga'], 0, ',', '.'); ?></div>
-                                </div>
-                            </div>
-                            
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 20px;">
-                                <div class="detail-display-group" style="margin-bottom: 0;">
-                                    <label class="detail-display-label">Jumlah Stok</label>
-                                    <div class="detail-display-value <?php echo $barang['jumlah'] < 10 ? 'stock-low' : ''; ?>">
-                                        <?php echo $barang['jumlah']; ?> unit
-                                    </div>
-                                </div>
-                                <div class="detail-display-group" style="margin-bottom: 0;">
-                                    <label class="detail-display-label">Tanggal Masuk</label>
-                                    <div class="detail-display-value"><?php echo date('d/m/Y', strtotime($barang['tanggal_masuk'])); ?></div>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 20px;">
+                            <div class="detail-display-group" style="margin-bottom: 0;">
+                                <label class="detail-display-label">Jumlah Stok</label>
+                                <div class="detail-display-value <?php echo $barang['jumlah'] < 10 ? 'stock-low' : ''; ?>">
+                                    <?php echo $barang['jumlah']; ?> unit
                                 </div>
                             </div>
-                            
-                            <div class="detail-display-group">
-                                <label class="detail-display-label">Deskripsi Produk</label>
-                                <div class="detail-display-value detail-display-textarea">
-                                    <?php echo !empty($barang['deskripsi']) ? nl2br(htmlspecialchars($barang['deskripsi'])) : 'Tidak ada deskripsi.'; ?>
-                                </div>
+                            <div class="detail-display-group" style="margin-bottom: 0;">
+                                <label class="detail-display-label">Tanggal Masuk</label>
+                                <div class="detail-display-value"><?php echo date('d/m/Y', strtotime($barang['tanggal_masuk'])); ?></div>
                             </div>
-                            
-                            <div style="margin-top: 32px; display: flex; gap: 12px; justify-content: flex-end;">
-                                <button type="button" class="btn-secondary" style="background: var(--danger); color: white;" onclick="openDeleteModal(<?php echo $barang['id']; ?>)">
-                                    <i class="fas fa-trash"></i> Hapus Barang
-                                </button>
-                                <a href="edit.php?id=<?php echo $barang['id']; ?>" class="btn-primary">
-                                    <i class="fas fa-edit"></i> Edit Barang
-                                </a>
-                                <a href="index.php?page=data_barang" class="btn-secondary">
-                                    <i class="fas fa-list"></i> Kembali ke Daftar
-                                </a>
+                        </div>
+                        
+                        <div class="detail-display-group">
+                            <label class="detail-display-label">Deskripsi Produk</label>
+                            <div class="detail-display-value detail-display-textarea">
+                                <?php echo !empty($barang['deskripsi']) ? nl2br(htmlspecialchars($barang['deskripsi'])) : 'Tidak ada deskripsi.'; ?>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
         </div>
     </main>
