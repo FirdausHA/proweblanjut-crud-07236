@@ -9,36 +9,36 @@ include 'koneksi.php';
 
 <div class="stats-row">
     <!-- Stock Alert Card -->
-    <div class="card stat-card-flex">
+    <a href="index.php?page=data_barang&filter=low_stock" class="card stat-card-flex stat-card-link">
         <div class="stat-icon-wrapper warning">
             <i class="fas fa-exclamation-triangle"></i>
         </div>
         <div class="stat-content">
             <h3 class="stat-label">Stok Kurang (< 5)</h3>
             <?php
-            $sql = "SELECT COUNT(*) as total FROM barang where jumlah < 5";
-            $result = $koneksi->query($sql);
-            $row = $result->fetch_assoc();
+            $stmt = $pdo->prepare("SELECT COUNT(*) as total FROM barang where jumlah < 5");
+            $stmt->execute();
+            $row = $stmt->fetch();
             ?>
             <div class="stat-value"><?php echo $row['total'] ?? 0; ?></div>
         </div>
-    </div>
+    </a>
 
     <!-- Total Items Card -->
-    <div class="card stat-card-flex">
+    <a href="index.php?page=data_barang" class="card stat-card-flex stat-card-link">
         <div class="stat-icon-wrapper info">
             <i class="fas fa-boxes"></i>
         </div>
         <div class="stat-content">
             <h3 class="stat-label">Total Macam Barang</h3>
             <?php
-            $sql = "SELECT COUNT(*) as total FROM barang";
-            $result = $koneksi->query($sql);
-            $row = $result->fetch_assoc();
+            $stmt = $pdo->prepare("SELECT COUNT(*) as total FROM barang");
+            $stmt->execute();
+            $row = $stmt->fetch();
             ?>
             <div class="stat-value"><?php echo $row['total']; ?></div>
         </div>
-    </div>
+    </a>
 </div>
 
 <div class="card quick-menu-card">

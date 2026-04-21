@@ -4,9 +4,6 @@
             <div class="footer-text">
                 <p>&copy; <?php echo date('Y'); ?> <strong>SIGUDHANG</strong>. All rights reserved.</p>
             </div>
-            <div class="footer-info">
-                Version 1.0.0 | Built with <i class="fas fa-heart"></i>
-            </div>
         </div>
     </footer>
 

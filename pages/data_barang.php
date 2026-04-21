@@ -11,6 +11,7 @@
     // Search & Filter Logic (PDO)
     $search = isset($_GET['search']) ? $_GET['search'] : '';
     $kategori_filter = isset($_GET['kategori']) ? $_GET['kategori'] : '';
+    $stok_filter = isset($_GET['filter']) ? $_GET['filter'] : '';
     
     $where = "WHERE 1=1";
     $params = [];
@@ -25,6 +26,9 @@
         $where .= " AND kategori = ?";
         $params[] = $kategori_filter;
     }
+    if ($stok_filter == 'low_stock') {
+        $where .= " AND jumlah < 5";
+    }
     
     $query = "SELECT * FROM barang $where ORDER BY id DESC";
     $stmt = $pdo->prepare($query);
@@ -33,12 +37,24 @@
     
     // Get all categories for filter
     $cat_query = "SELECT DISTINCT kategori FROM barang WHERE kategori IS NOT NULL AND kategori != ''";
-    $categories = $pdo->query($cat_query)->fetchAll(PDO::FETCH_COLUMN);
+    $stmt_cat = $pdo->prepare($cat_query);
+    $stmt_cat->execute();
+    $categories = $stmt_cat->fetchAll(PDO::FETCH_COLUMN);
 ?>
 
 <div class="page-title-block">
-    <h2>Data Barang</h2>
-    <p>Daftar semua barang dalam inventaris gudang.</p>
+    <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+        <div>
+            <h2>Data Barang</h2>
+            <p>Daftar semua barang dalam inventaris gudang.</p>
+        </div>
+        <?php if ($stok_filter == 'low_stock'): ?>
+            <div class="filter-badge">
+                <i class="fas fa-filter"></i> Menampilkan: Stok Kurang (< 5)
+                <a href="index.php?page=data_barang" class="btn-clear-filter" title="Hapus Filter"><i class="fas fa-times"></i></a>
+            </div>
+        <?php endif; ?>
+    </div>
 </div>
 
 <div class="filters-bar">

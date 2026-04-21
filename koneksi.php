@@ -14,9 +14,6 @@
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         // Set default fetch mode ke associative array
         $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-        
-        // Tetap simpan $koneksi untuk kompatibilitas sementara jika ada skrip yang belum di-refactor
-        $koneksi = mysqli_connect($host, $username, $password, $database);
     } catch (PDOException $e) {
         die("Koneksi database gagal: " . $e->getMessage());
     }

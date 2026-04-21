@@ -178,7 +178,7 @@ $page_title = "Tambah Barang";
                                 <label class="form-label-required">Kode Barang</label>
                                 <input type="text" name="kode_barang" class="form-control-custom" placeholder="BRG001" value="<?php echo htmlspecialchars($old_data['kode_barang'] ?? ''); ?>" required>
                             </div>
-                            
+
                             <div class="form-group" style="margin-bottom: 24px;">
                                 <label class="form-label-required">Upload Gambar</label>
                                 <input type="file" name="gambar" class="form-control-custom" accept="image/*">
